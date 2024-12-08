@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d9184853-975a-41e9-96a8-642db1455404" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="asyncscopepocFlow" doc:id="3d36b167-a4dd-437e-a317-ef43b5b6146e" >
+		<http:listener doc:name="Listener" doc:id="0bae8e72-38b2-43aa-97a6-979229248630" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="10d6aa03-82b6-47e8-b865-e2863eae2ed8" message="start flow"/>
+		<async doc:name="Async" doc:id="064df7c4-c4dc-4c78-a0d9-55e5dc9b89f1" >
+			<logger level="INFO" doc:name="Logger" doc:id="aae4a10a-6b7f-4e95-bb06-8464b2b8e427" />
+			<ee:transform doc:name="Transform Message" doc:id="eaaf43f1-5a62-452a-b206-c91ccdbf177f" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<file:write doc:id="38f59e60-4934-4a80-a4d5-4a5dd2831f0f" path="C:\Users\kmdam\OneDrive\Desktop\New Text Document.txt" mode="APPEND"/>
+			<logger level="INFO" doc:name="Logger" doc:id="c48f41da-1f39-4c12-8c8f-ee3cb58e08fd" />
+		</async>
+		<ee:transform doc:name="Transform Message" doc:id="53fd285e-a2e1-4231-96e2-9db214bb7993" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload splitBy("")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="23925c02-7263-451f-84e3-c8c0716ae4cf" />
+	</flow>
+</mule>
